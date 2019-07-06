@@ -25,6 +25,9 @@ icewsEventMunger <- function(directory = getwd()){
 	}
 	as_tibble(icewsdf)
 
+	# timestamp
+	attr(icewsdf, "date-created") <- Sys.time()
+
 	# "fix" the column names
 	attr(icewsdf, "var.labels") <- names(icewsdf)
 	names(icewsdf) <- tolower(gsub(" ", "_", names(icewsdf), fixed = TRUE))
