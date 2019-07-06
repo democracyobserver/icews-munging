@@ -14,18 +14,19 @@ require(tidyverse)
 ####################  CODE  ##############################
 
 # function to gather and format the events data for all years
-
+# note this produces a .rds file of large size and potentially millions of rows
 icewsEventMunger <- function(directory = getwd()){
 	files <- dir(directory)
 	icewsdf <- NULL
 	for(i in 1:length(files)){
 		tmp <- read_tsv(files[i])
 		icewsdf <- rbind(icewsdf, tmp)
+		rm(tmp)
 	}
 	as_tibble(icewsdf)
+
+	# "fix" the column names
+	attr(icewsdf, "var.labels") <- names(icewsdf)
+	names(icewsdf) <- tolower(gsub(" ", "_", names(icewsdf), fixed = TRUE))
+	write_rds(icewsdf, paste0("icews-eventdata_", Sys.Date(), ".rds"), compress = "xz")
 }
-
-# test
-tmp1 <- icewsEventMunger()
-
-# there are some issues; need to consider encoding problems
